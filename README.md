@@ -36,7 +36,9 @@ The project structure distinguishes three kinds of folders:
 
 ## Add a citation file
 Create a citation file for your repository using [cffinit](https://citation-file-format.github.io/cff-initializer-javascript/#/)
+TODO
 
 ## License
 
 This project is licensed under the terms of the [MIT License](/LICENSE).
+TODO
