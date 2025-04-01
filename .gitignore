@@ -1,3 +1,6 @@
+# Mac
+*.DS_Store # when coorporating with Mac Users always include this
+
 # Data
 /data/temp
 /data/processed
