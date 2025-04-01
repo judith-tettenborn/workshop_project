@@ -3,8 +3,9 @@
 
 # Data
 /data/temp
-/data/processed
 /data/raw
+/data/processed
+/data/final
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
