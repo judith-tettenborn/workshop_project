@@ -21,7 +21,12 @@ Created on Thu Mar  7 15:35:33 2024
 
 # Modify Python Path Programmatically -> To include the directory containing the src folder
 import sys
-sys.path.append('C:\\Users\\Judit\\OneDrive - Universiteit Utrecht\\02_Coding\\Workshop_Best-practices-writing-code\\src')
+from pathlib import Path
+import os
+from peak_analysis.find_analyze_peaks import *
+
+# V1 - works but hard-coded
+# sys.path.append('C:\\Users\\Judit\\OneDrive - Universiteit Utrecht\\02_Coding\\Workshop_Best-practices-writing-code\\src')
 # In Python, the "Python path" refers to the list of directories where Python looks for modules
 # and packages when you try to import them in your scripts or interactive sessions. This path 
 # is stored in the sys.path list. When you execute an import statement in Python, it searches 
@@ -29,34 +34,43 @@ sys.path.append('C:\\Users\\Judit\\OneDrive - Universiteit Utrecht\\02_Coding\\W
 # If the directory containing the module or package is not included in sys.path, Python won't 
 # be able to find and import it.
 
+# READ IN DATA
+# path_fig       =  'C:/Users/Judit/OneDrive - Universiteit Utrecht/02_Coding\Workshop_Best-practices-writing-code/Figures/'
+# path_procdata  = 'C:/Users/Judit/OneDrive - Universiteit Utrecht/02_Coding\Workshop_Best-practices-writing-code/Data/processed/'
+# path_finaldata = 'C:/Users/Judit/OneDrive - Universiteit Utrecht/02_Coding\Workshop_Best-practices-writing-code/Data/final/'
+
+# V2 - relative paths
+ROOT_DIR = Path(os.path.abspath("")) #.parent  # Moves up one level
+print(ROOT_DIR)
+
+# Get the root directory (assuming the script is in the 'src' folder)
+ROOT_DIR = Path(__file__).resolve().parent.parent  # Moves up from 'src' to project root
+
+
+
+
+# Modify Python Path to include the 'src' folder
+sys.path.append(str(ROOT_DIR / "src"))
+
+# Define paths relative to the project root
+path_fig       = ROOT_DIR / "results/figures"
+path_procdata  = ROOT_DIR / "data" / "processed"
+path_finaldata = ROOT_DIR / "data" / "final"
+
+#-----
+
 import pandas as pd
 import numpy as np
-from numpy import trapz
-from sklearn.metrics import auc
-import time
-import os
-from datetime import timedelta
-from datetime import datetime
-from scipy.signal import find_peaks
-from scipy.optimize import curve_fit
-from geopy.distance import geodesic
-import xlsxwriter
-#from scipy.integrate import simpson
-#import simplekml
-#import pillow
-
 import matplotlib.pyplot as plt
-from matplotlib.gridspec import GridSpec
-import matplotlib.dates as mdates
-import tilemapbase
 
-
-from preprocessing.readin_data import *
 from peak_analysis.find_analyze_peaks import *
 from plotting.general_plots import *
-from helper_functions.data_handling import *
-
-
+#from helper_functions.data_handling import *
+# functions used
+# plot_CH4timeseries
+# analyse_peak
+# plot_indivpeaks_afterQC
+# add_distance_to_df
 
 
 # READ IN DATA
@@ -388,66 +402,66 @@ if writexlsx:
 
     
 
-#%% P: Detailed Peak Plots
+# #%% P: Detailed Peak Plots
 
 
-''' ===== Utrecht III ===== '''
+# ''' ===== Utrecht III ===== '''
 
-# Define other necessary variables
-coord_extent_1 = [total_peaks_U3['Longitude'].min()-0.001,total_peaks_U3['Longitude'].max(), total_peaks_U3['Latitude'].min()-0.0005, total_peaks_U3['Latitude'].max()+0.0005] #r_loc: 43.782970N, (-)79.46952W 
-coord_extent_1 = [5.1633, 5.166, 52.0873, 52.0888]
-release_loc1 = (5.164652777777778, 52.0874472)
-release_loc1_2 = (5.16506388888889, 52.0875333) 
-release_loc2 = (5.164452777777778, 52.0885333) # 
-# column_names_1 = {'G2301': 'CH4_ele_G23'}
-# column_names_2 = {'Aeris': 'CH4_ele_aeris'}
-column_names_1 = {'G2301': 'CH4_ele_G23','Aeris': 'CH4_ele_aeris'}
-indiv_peak_plots = True  # or False based on your requirement
-
-
-path_savefig = path_fig + "Utrecht_III/Peakplots_QCpassed"
+# # Define other necessary variables
+# coord_extent_1 = [total_peaks_U3['Longitude'].min()-0.001,total_peaks_U3['Longitude'].max(), total_peaks_U3['Latitude'].min()-0.0005, total_peaks_U3['Latitude'].max()+0.0005] #r_loc: 43.782970N, (-)79.46952W 
+# coord_extent_1 = [5.1633, 5.166, 52.0873, 52.0888]
+# release_loc1 = (5.164652777777778, 52.0874472)
+# release_loc1_2 = (5.16506388888889, 52.0875333) 
+# release_loc2 = (5.164452777777778, 52.0885333) # 
+# # column_names_1 = {'G2301': 'CH4_ele_G23'}
+# # column_names_2 = {'Aeris': 'CH4_ele_aeris'}
+# column_names_1 = {'G2301': 'CH4_ele_G23','Aeris': 'CH4_ele_aeris'}
+# indiv_peak_plots = True  # or False based on your requirement
 
 
-# First location on lane 1 (in excel file named location 3)
-plot_indivpeaks_afterQC(total_peaks_U3[:'2024-06-11 11:22:00'], path_fig, coord_extent_1, release_loc1, release_loc2, indiv_peak_plots, column_names_1, U3_vars_G23, U3_vars_aeris)
-
-# Second location on lane 1 (in excel file named location 1)
-plot_indivpeaks_afterQC(total_peaks_U3['2024-06-11 11:22:00':], path_fig, coord_extent_1, release_loc1_2, release_loc2, indiv_peak_plots, column_names_1, U3_vars_G23, U3_vars_aeris)
+# path_savefig = path_fig + "Utrecht_III/Peakplots_QCpassed"
 
 
-''' ===== Rotterdam ===== '''
+# # First location on lane 1 (in excel file named location 3)
+# plot_indivpeaks_afterQC(total_peaks_U3[:'2024-06-11 11:22:00'], path_fig, coord_extent_1, release_loc1, release_loc2, indiv_peak_plots, column_names_1, U3_vars_G23, U3_vars_aeris)
+
+# # Second location on lane 1 (in excel file named location 1)
+# plot_indivpeaks_afterQC(total_peaks_U3['2024-06-11 11:22:00':], path_fig, coord_extent_1, release_loc1_2, release_loc2, indiv_peak_plots, column_names_1, U3_vars_G23, U3_vars_aeris)
 
 
-# Define other necessary variables
-coord_extent = [4.51832, 4.52830, 51.91921, 51.92288]
-release_loc1_R = (4.5237450, 51.9201216)
-release_loc2_R = (4.5224917, 51.9203931) #51.9203931,4.5224917
-release_loc3_R = (4.523775, 51.921028) # estimated from Daans plot (using google earth)
-column_names_mUU = {'G4302': 'CH4_ele_G43','G2301': 'CH4_ele_G23', 'Aeris':'CH4_ele_aeris'}
-column_names_mTNO = {'Miro': 'CH4_ele_miro', 'Aerodyne': 'CH4_ele_aero'}
-column_names_aTNO = {'Miro': 'CH4_ele_miro', 'Aerodyne': 'CH4_ele_aero', 'G4302': 'CH4_ele_G43', 'Aeris':'CH4_ele_aeris'}
-indiv_peak_plots = True  # or False based on your requirement
+# ''' ===== Rotterdam ===== '''
 
 
-''' --- Morning UU --- '''
-
-path_savefig =  path_fig + "Rotterdam/Peakplots_QCpassed/Morning_UU"
-# Call the function with necessary arguments
-plot_indivpeaks_afterQC(corrected_peaks_R_mUU, path_savefig, coord_extent, release_loc1_R, release_loc2_R, indiv_peak_plots, column_names_mUU, R_vars_G43, R_vars_G23,R_vars_aeris)
-# Note: put main instrument first in args* (for Morning UU: G4302 -> R_vars_G43)
-
-''' --- Morning TNO --- '''
-
-path_savefig =  path_fig + "Rotterdam/Peakplots_QCpassed/Morning_TNO"
-# Call the function with necessary arguments
-plot_indivpeaks_afterQC(corrected_peaks_R_mTNO, path_savefig, coord_extent, release_loc1_R, release_loc2_R, indiv_peak_plots, column_names_mTNO, R_vars_miro, R_vars_aerodyne)
+# # Define other necessary variables
+# coord_extent = [4.51832, 4.52830, 51.91921, 51.92288]
+# release_loc1_R = (4.5237450, 51.9201216)
+# release_loc2_R = (4.5224917, 51.9203931) #51.9203931,4.5224917
+# release_loc3_R = (4.523775, 51.921028) # estimated from Daans plot (using google earth)
+# column_names_mUU = {'G4302': 'CH4_ele_G43','G2301': 'CH4_ele_G23', 'Aeris':'CH4_ele_aeris'}
+# column_names_mTNO = {'Miro': 'CH4_ele_miro', 'Aerodyne': 'CH4_ele_aero'}
+# column_names_aTNO = {'Miro': 'CH4_ele_miro', 'Aerodyne': 'CH4_ele_aero', 'G4302': 'CH4_ele_G43', 'Aeris':'CH4_ele_aeris'}
+# indiv_peak_plots = True  # or False based on your requirement
 
 
-''' --- Afternoon TNO --- '''
+# ''' --- Morning UU --- '''
 
-path_savefig =  path_fig + "Rotterdam/Peakplots_QCpassed/Afternoon_TNO"
-# Call the function with necessary arguments
-plot_indivpeaks_afterQC(corrected_peaks_R_aTNO, path_savefig, coord_extent, release_loc1_R, release_loc3_R, indiv_peak_plots, column_names_aTNO, R_vars_miro, R_vars_aerodyne,R_vars_G43,R_vars_aeris)
+# path_savefig =  path_fig + "Rotterdam/Peakplots_QCpassed/Morning_UU"
+# # Call the function with necessary arguments
+# plot_indivpeaks_afterQC(corrected_peaks_R_mUU, path_savefig, coord_extent, release_loc1_R, release_loc2_R, indiv_peak_plots, column_names_mUU, R_vars_G43, R_vars_G23,R_vars_aeris)
+# # Note: put main instrument first in args* (for Morning UU: G4302 -> R_vars_G43)
+
+# ''' --- Morning TNO --- '''
+
+# path_savefig =  path_fig + "Rotterdam/Peakplots_QCpassed/Morning_TNO"
+# # Call the function with necessary arguments
+# plot_indivpeaks_afterQC(corrected_peaks_R_mTNO, path_savefig, coord_extent, release_loc1_R, release_loc2_R, indiv_peak_plots, column_names_mTNO, R_vars_miro, R_vars_aerodyne)
+
+
+# ''' --- Afternoon TNO --- '''
+
+# path_savefig =  path_fig + "Rotterdam/Peakplots_QCpassed/Afternoon_TNO"
+# # Call the function with necessary arguments
+# plot_indivpeaks_afterQC(corrected_peaks_R_aTNO, path_savefig, coord_extent, release_loc1_R, release_loc3_R, indiv_peak_plots, column_names_aTNO, R_vars_miro, R_vars_aerodyne,R_vars_G43,R_vars_aeris)
 
 
 
@@ -617,7 +631,7 @@ df_RU2 = pd.concat(df_RU2, axis=0, ignore_index=True, sort=False)
 df_RU2 = df_RU2.set_index(df_RU2.columns[0], drop=True) # set Datetime column as index
 df_RU2_rr_count = df_RU2.groupby(['Release_rate']).size().reset_index(name='count')
 
-save_to_csv=False
+save_to_csv=True
 
 if save_to_csv:
     # Save the DataFrame as a CSV file
@@ -639,9 +653,9 @@ if save_to_csv:
     # df_R_UU_rr_count.to_csv(path_finaldata+'R_UU_comb_count.csv')
     df_U1_rr_count.to_csv(path_finaldata+'U1_comb_count.csv')
     df_U3_rr_count.to_csv(path_finaldata+'U3_comb_count.csv')
-    
+    print('Dataframes saved as .csv files')
 
-
+print('Script finished')
 
 
 #%% End

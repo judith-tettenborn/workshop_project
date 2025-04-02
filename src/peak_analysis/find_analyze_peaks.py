@@ -1003,6 +1003,58 @@ def distance(lon_ref, lat_ref, lon, lat):
     
     
 def analyse_peak(corrected_peaks,*args): #args*= G43_vars,G23_vars,...
+    """
+    Main purpose: calculated the integrated spatial peak area per verified peak
+    (enhancement) in methane measurements.
+    Additionally: some other characteristics (length of transect, mean speed,
+    release rates...) are added to the dataframe
+
+    This function processes methane peak data from different measurement instruments
+    obtained in different experiments, and stores results in the provided DataFrame.
+
+    Parameters:
+    -----------
+    corrected_peaks : pandas.DataFrame
+        DataFrame containing identified and quality-checked peaks
+        The index must be a datetime object.
+    
+    *args : dict
+        Variable number of dictionaries, each representing an instrument's data.
+        Each dictionary must contain the following keys:
+        - 'df' (pandas.DataFrame): Measurement data with timestamps.
+        - 'CH4col' (str): Column name for methane concentration.
+        - 'spec' (str): Instrument specification name.
+        - 'title' (str): Instrument title used for QC filtering.
+        - 'city' (str): City name for selecting the appropriate release rate function.
+        - 'day' (str): Measurement day, used in release rate assignment.
+    
+    Returns:
+    --------
+    None
+        The function modifies `corrected_peaks` in place by adding calculated fields:
+        - 'Area_sum_<spec>' : Area under the methane concentration curve using
+                            stepwise speed information
+        - 'Area_mean_<spec>' : Area estimated using mean speed.
+        - 'Max_<spec>' : Maximum methane concentration within the peak.
+        - 'Release_rate' : Release rate based on city-specific functions.
+        - 'Release_rate_str' : String representation of the release rate.
+        - 'Mean_speed' : Average speed of the measurement vehicle per transect/peak
+        - 'dx_calc_meanspeed' : Estimated transect length using mean speed.
+        - 'dx_gps' : Transect length based on GPS coordinates.
+        - 'Longitude', 'Latitude' : Location of the peak.
+        - 'Release_height' (only for London data) : Release height.
+        - 'QC' : Boolean flag indicating whether the peak passed QC checks.
+    
+    Notes:
+    ------
+    - This function assumes that `corrected_peaks` has columns for each instrument
+      title used in QC filtering.
+    - The function applies city-specific release rate functions based on the `city`
+      field in `args`.
+    """
+    
+    
+    
 
     # Define a dictionary mapping city names to releaserate functions
     releaserate_functions = {
@@ -1046,8 +1098,7 @@ def analyse_peak(corrected_peaks,*args): #args*= G43_vars,G23_vars,...
             
             if all(x == 1.0 for x in QC) and (('GPS' not in row or row['GPS']==1) 
                                               and (('Loc' not in row or row['Loc']!=0))):
-            #if (row['QC']==True):
-                 
+                             
                 QCcount        += 1
                 trans_s         = row['Peakstart_QC']
                 trans_e         = row['Peakend_QC']
