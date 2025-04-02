@@ -23,7 +23,6 @@ Created on Thu Mar  7 15:35:33 2024
 import sys
 from pathlib import Path
 import os
-from peak_analysis.find_analyze_peaks import *
 
 # V1 - works but hard-coded
 # sys.path.append('C:\\Users\\Judit\\OneDrive - Universiteit Utrecht\\02_Coding\\Workshop_Best-practices-writing-code\\src')
@@ -40,22 +39,16 @@ from peak_analysis.find_analyze_peaks import *
 # path_finaldata = 'C:/Users/Judit/OneDrive - Universiteit Utrecht/02_Coding\Workshop_Best-practices-writing-code/Data/final/'
 
 # V2 - relative paths
-ROOT_DIR = Path(os.path.abspath("")) #.parent  # Moves up one level
-print(ROOT_DIR)
 
-# Get the root directory (assuming the script is in the 'src' folder)
-ROOT_DIR = Path(__file__).resolve().parent.parent  # Moves up from 'src' to project root
-
-
-
+root_dir = Path.cwd()
 
 # Modify Python Path to include the 'src' folder
-sys.path.append(str(ROOT_DIR / "src"))
+sys.path.append(str(root_dir / "src"))
 
 # Define paths relative to the project root
-path_fig       = ROOT_DIR / "results/figures"
-path_procdata  = ROOT_DIR / "data" / "processed"
-path_finaldata = ROOT_DIR / "data" / "final"
+path_fig       = root_dir / "results/figures"
+path_procdata  = root_dir / "data" / "processed"
+path_finaldata = root_dir / "data" / "final"
 
 #-----
 
@@ -65,6 +58,7 @@ import matplotlib.pyplot as plt
 
 from peak_analysis.find_analyze_peaks import *
 from plotting.general_plots import *
+from peak_analysis.find_analyze_peaks import *
 #from helper_functions.data_handling import *
 # functions used
 # plot_CH4timeseries
@@ -74,9 +68,9 @@ from plotting.general_plots import *
 
 
 # READ IN DATA
-path_fig       =  'C:/Users/Judit/OneDrive - Universiteit Utrecht/02_Coding\Workshop_Best-practices-writing-code/Figures/'
-path_procdata  = 'C:/Users/Judit/OneDrive - Universiteit Utrecht/02_Coding\Workshop_Best-practices-writing-code/Data/processed/'
-path_finaldata = 'C:/Users/Judit/OneDrive - Universiteit Utrecht/02_Coding\Workshop_Best-practices-writing-code/Data/final/'
+# path_fig       =  'C:/Users/Judit/OneDrive - Universiteit Utrecht/02_Coding\Workshop_Best-practices-writing-code/Figures/'
+# path_procdata  = 'C:/Users/Judit/OneDrive - Universiteit Utrecht/02_Coding\Workshop_Best-practices-writing-code/Data/processed/'
+# path_finaldata = 'C:/Users/Judit/OneDrive - Universiteit Utrecht/02_Coding\Workshop_Best-practices-writing-code/Data/final/'
 
 # -----------------------------------------------------------------------------
 # Read in datafiles containing identified and quality-checked methane plumes
