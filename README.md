@@ -39,6 +39,8 @@ pip install -r requirements.txt
 How to run the scripts or use the model.
 Example commands or workflow.
 
+Navigate to the project 'workshop_project' and run the script from there in order to get the right paths to data and output folders.
+
 ## Data
 Describe any datasets used (if applicable)
 
